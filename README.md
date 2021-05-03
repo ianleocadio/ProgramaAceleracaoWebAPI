@@ -12,7 +12,13 @@
 
 * Abra a solution no Visual Studio 2019;
 * Selecione o projeto `WebAPI` como Startup Project;
-* Execute a aplicação.
+* Execute a aplicação;
+* Abra no navegador http://localhost:8080
+
+## Swagger Documentation
+Para facilitar o uso da API foi disponibilizado a interface fornecida pelo Swagger.
+para acessar basta abrir o endereço base da aplicação http://localhost:8080
+
 ___
 ## Executando para InMemory
 Não forneça ConnectionStrings no `appsettings.json`. Por padrão a aplicação irá iniciar com o banco em memória.

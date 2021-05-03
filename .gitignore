@@ -1,3 +1,4 @@
 .vs/
 bin/
 obj/
+WebAPI/appsecrets.json

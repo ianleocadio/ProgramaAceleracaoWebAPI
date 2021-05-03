@@ -30,10 +30,9 @@ namespace WebAPI.Extensions
 
         private async static Task CreateDefaultUsersAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            // O ideal seria utilizar o UserService com um método CreateRangeAsync().
-            var userRepository = serviceProvider.GetRequiredService<IUserRepository>();
+            var uow = serviceProvider.GetRequiredService<IUnitOfWork>();
 
-            if (await userRepository.ExistsByUsernameAsync("admin", cancellationToken))
+            if (await uow.UserRepository.ExistsByUsernameAsync("admin", cancellationToken))
             {
                 return;
             }
@@ -67,7 +66,9 @@ namespace WebAPI.Extensions
                 },
             };
 
-            await userRepository.CreateRangeAsync(defaultUsers, cancellationToken);
+            await uow.UserRepository.CreateRangeAsync(defaultUsers, cancellationToken);
+
+            await uow.SaveChangesAsync(cancellationToken);
         }
     }
 }

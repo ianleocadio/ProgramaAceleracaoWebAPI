@@ -23,13 +23,11 @@ namespace Database.Repositories.Common
         public virtual async Task CreateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             await this.DbSet.AddAsync(entity, cancellationToken);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
         public virtual async Task CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
         {
             await this.DbSet.AddRangeAsync(entities, cancellationToken);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<bool> ExistsByIdAsync(long id, CancellationToken cancellationToken)
@@ -47,28 +45,24 @@ namespace Database.Repositories.Common
             return await this.DbSet.ToListAsync(cancellationToken);
         }
 
-        public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual void Update(TEntity entity)
         {
             this.DbSet.Update(entity);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+        public virtual void UpdateRange(IEnumerable<TEntity> entities)
         {
             this.DbSet.UpdateRange(entities);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual void Delete(TEntity entity)
         {
             this.DbSet.Remove(entity);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+        public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
             this.DbSet.RemoveRange(entities);
-            await this.Context.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

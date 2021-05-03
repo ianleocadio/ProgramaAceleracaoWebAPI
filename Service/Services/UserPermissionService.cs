@@ -15,13 +15,11 @@ namespace Service.Services
 {
     public class UserPermissionService : IUserPermissionService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUserPermissionRepository _userPermissionRepository;
+        private readonly IUnitOfWork _uow;
 
-        public UserPermissionService(IUserRepository userRepository, IUserPermissionRepository userPermissionRepository)
+        public UserPermissionService(IUnitOfWork uow)
         {
-            this._userRepository = userRepository;
-            this._userPermissionRepository = userPermissionRepository;
+            this._uow = uow;
         }
 
         public async Task AddAsync(IEnumerable<UserPermissionUpdateTransfer> permissionUpdateTransfers, CancellationToken cancellationToken)
@@ -30,31 +28,32 @@ namespace Service.Services
 
             foreach (var permissionUpdate in permissionUpdateTransfers)
             {
-                User? user = await this._userRepository.GetByIdAsync(permissionUpdate.UserID, cancellationToken);
+                User? user = await this._uow.UserRepository.GetByIdAsync(permissionUpdate.UserID, cancellationToken);
 
                 if (user == null)
                 {
                     throw new ActionRejectedException($"Usuário {permissionUpdate.UserID} inexistente.");
                 }
 
-                var newPermissionsEnum = permissionUpdate.Permissions
-                .Except(
-                    user.Permissions ?? Enumerable.Empty<UserPermission>(),
-                    p => p,
-                    up => up.Permission
-                )
-                .Where(p => Enum.IsDefined(p));
-
-                var newPermissions = newPermissionsEnum.Select(p => new UserPermission()
-                {
-                    UserID = user.ID!.Value,
-                    Permission = p
-                });
+                var newPermissions = permissionUpdate.Permissions
+                    .Except(
+                        user.Permissions, 
+                        p => p, 
+                        up => up.Permission
+                    )
+                    .Where(p => Enum.IsDefined(p))
+                    .Select(p => new UserPermission()
+                    {
+                        UserID = user.ID!.Value,
+                        Permission = p
+                    });
 
                 permissionsToAdd.AddRange(newPermissions);
             }
 
-            await this._userPermissionRepository.CreateRangeAsync(permissionsToAdd, cancellationToken);
+            await this._uow.UserPermissionRepository.CreateRangeAsync(permissionsToAdd, cancellationToken);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
         }
 
         public async Task RemoveAsync(IEnumerable<UserPermissionUpdateTransfer> permissionUpdateTransfers, CancellationToken cancellationToken)
@@ -63,19 +62,26 @@ namespace Service.Services
 
             foreach (var permissionUpdate in permissionUpdateTransfers)
             {
-                var userPermissions = await this._userPermissionRepository.GetByUserIdAsync(permissionUpdate.UserID, cancellationToken);
+                var userPermissions = await this._uow.UserPermissionRepository.GetByUserIdAsync(permissionUpdate.UserID, cancellationToken);
 
                 if (userPermissions == null || !userPermissions.Any())
                 {
                     continue;
                 }
 
-                var oldPermissions = userPermissions.Intersect(permissionUpdate.Permissions, up => up.Permission, p => p);
+                var oldPermissions = userPermissions
+                    .Intersect(
+                        permissionUpdate.Permissions, 
+                        up => up.Permission, 
+                        p => p
+                    );
 
                 permissionsToRemove.AddRange(oldPermissions);
             }
 
-            await this._userPermissionRepository.DeleteRangeAsync(permissionsToRemove, cancellationToken);
+            this._uow.UserPermissionRepository.DeleteRange(permissionsToRemove);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
         }
     }
 }

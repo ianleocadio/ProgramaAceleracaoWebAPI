@@ -1,13 +1,10 @@
-﻿using Database.Contexts;
+﻿using Database;
+using Database.Contexts;
 using Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebAPI.Extensions
 {
@@ -16,8 +13,9 @@ namespace WebAPI.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                .AddTransient<IUserRepository, UserRepository>()
-                .AddTransient<IUserPermissionRepository, UserPermissionRepository>();
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IUserPermissionRepository, UserPermissionRepository>();
         }
 
         public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)

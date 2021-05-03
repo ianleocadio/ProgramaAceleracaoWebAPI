@@ -13,16 +13,16 @@ namespace Service.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        private readonly IUserPermissionRepository _userPermissionRepository;
+        private readonly IUnitOfWork _uow;
 
-        public AuthorizationService(IUserPermissionRepository userPermissionRepository)
+        public AuthorizationService(IUnitOfWork uow)
         {
-            this._userPermissionRepository = userPermissionRepository;
+            this._uow = uow;
         }
 
         public async Task<IEnumerable<Claim>> GetUserPermissionClaimsAsync(long userID, CancellationToken cancellationToken)
         {
-            var userPermissions = await this._userPermissionRepository.GetByUserIdAsync(userID, cancellationToken);
+            var userPermissions = await this._uow.UserPermissionRepository.GetByUserIdAsync(userID, cancellationToken);
 
             if (userPermissions == null || !userPermissions.Any())
             {

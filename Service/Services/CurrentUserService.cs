@@ -13,15 +13,15 @@ namespace Service.Services
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _uow;
 
         public CurrentUserService(
             IHttpContextAccessor httpContextAccessor,
-            IUserRepository userRepository
+            IUnitOfWork uow
         )
         {
             this._httpContextAccessor = httpContextAccessor;
-            this._userRepository = userRepository;
+            this._uow = uow;
         }
 
         public long? GetUserID()
@@ -41,7 +41,7 @@ namespace Service.Services
                 return null;
             }
 
-            return await this._userRepository.GetByIdAsync(this.GetUserID()!.Value, cancellationToken);
+            return await this._uow.UserRepository.GetByIdAsync(this.GetUserID()!.Value, cancellationToken);
         }
 
         #region Auxiliary Methods

@@ -6,7 +6,6 @@ using Domain.Transfers;
 using Repository.Interfaces;
 using Service.Interfaces;
 using Service.Interfaces.Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,16 +17,16 @@ namespace Service.Services
         IEntityConverterService<User, UserCreateTransfer>,
         IEntityConverterService<User, UserUpdateTransfer>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IAuthenticationService _authService;
+        private readonly IUnitOfWork _uow;
 
         public UserService(
-            Repository.Interfaces.IUserRepository userRepository, 
-            IAuthenticationService authenticationService
+            IAuthenticationService authenticationService,
+            IUnitOfWork uow
         )
         {
-            this._userRepository = userRepository;
             this._authService = authenticationService;
+            this._uow = uow;
         }
 
         public async Task<User> CreateAsync(UserCreateTransfer newUser, CancellationToken cancellationToken)
@@ -37,26 +36,28 @@ namespace Service.Services
                 throw new ActionRejectedException("E-mail inválido.");
             }
 
-            if (await this._userRepository.ExistsByUsernameAsync(newUser.Username, cancellationToken))
+            if (await this._uow.UserRepository.ExistsByUsernameAsync(newUser.Username, cancellationToken))
             {
                 throw new ActionRejectedException("Usuário já existente.");
             }
 
             User user = this.TransferToEntity(newUser);
 
-            await this._userRepository.CreateAsync(user, cancellationToken);
+            await this._uow.UserRepository.CreateAsync(user, cancellationToken);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
 
             return user;
         }
 
         public async Task<User?> GetByIdAsync(long id, CancellationToken cancellationToken)
         {
-            return await this._userRepository.GetByIdAsync(id, cancellationToken);
+            return await this._uow.UserRepository.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await this._userRepository.GetAllAsync(cancellationToken);
+            return await this._uow.UserRepository.GetAllAsync(cancellationToken);
         }
 
         public async Task<User> UpdateAsync(UserUpdateTransfer updateUser, CancellationToken cancellationToken)
@@ -66,7 +67,7 @@ namespace Service.Services
                 throw new ActionRejectedException("E-mail inválido.");
             }
 
-            User? currentUser = await this._userRepository.GetByIdAsync(updateUser.ID, cancellationToken);
+            User? currentUser = await this._uow.UserRepository.GetByIdAsync(updateUser.ID, cancellationToken);
 
             if (currentUser == null)
             {
@@ -75,7 +76,9 @@ namespace Service.Services
 
             currentUser = this.TransferToEntity(updateUser, currentUser);
 
-            await this._userRepository.UpdateAsync(currentUser, cancellationToken);
+            this._uow.UserRepository.Update(currentUser);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
 
             return currentUser;
         }
@@ -89,7 +92,9 @@ namespace Service.Services
                 throw new ActionRejectedException("Usuário não existente.");
             }
 
-            await this._userRepository.DeleteAsync(user, cancellationToken);
+            this._uow.UserRepository.Delete(user);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
         }
 
         #region Auxiliary Methods

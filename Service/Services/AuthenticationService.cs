@@ -13,24 +13,24 @@ namespace Service.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IUnitOfWork _uow;
 
         public AuthenticationService(
-            IUserRepository userRepository,
             ITokenService tokenService,
-            ICurrentUserService currentUserService
+            ICurrentUserService currentUserService,
+            IUnitOfWork uow
         )
         {
-            this._userRepository = userRepository;
             this._tokenService = tokenService;
             this._currentUserService = currentUserService;
+            this._uow = uow;
         }
 
         public async Task<string> AuthenticateAsync(AuthTransfer auth, CancellationToken cancellationToken)
         {
-            var user = await this._userRepository.GetByUsernameAsync(auth.Username, cancellationToken);
+            var user = await this._uow.UserRepository.GetByUsernameAsync(auth.Username, cancellationToken);
 
             if (user == null)
             {
@@ -72,7 +72,9 @@ namespace Service.Services
             currentUser.Password = encryptedNewPassword;
             currentUser.Hash = newHash;
 
-            await this._userRepository.UpdateAsync(currentUser, cancellationToken);
+            this._uow.UserRepository.Update(currentUser);
+
+            await this._uow.SaveChangesAsync(cancellationToken);
         }
 
         public string EncryptPassword(string password, string hash)

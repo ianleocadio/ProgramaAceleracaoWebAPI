@@ -19,12 +19,12 @@ namespace Repository.Interfaces.Common
 
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+        void Update(TEntity entity);
 
-        Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
+        void UpdateRange(IEnumerable<TEntity> entities);
 
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);
+        void Delete(TEntity entity);
 
-        Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
+        void DeleteRange(IEnumerable<TEntity> entities);
     }
 }

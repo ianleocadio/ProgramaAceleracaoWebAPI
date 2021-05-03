@@ -14,7 +14,7 @@ namespace Domain.Models
         public string? Email { get; set; }
 
         #region Collections
-        public ICollection<UserPermission>? Permissions { get; set; }
+        public ICollection<UserPermission> Permissions { get; set; } = null!;
         #endregion
     }
 }

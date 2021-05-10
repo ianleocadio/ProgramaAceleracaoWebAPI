@@ -3,17 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{5B9EFA62-9862-4575-A2D7-2096FA8E1503}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{5B9EFA62-9862-4575-A2D7-2096FA8E1503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Core", "Domain.Core\Domain.Core.csproj", "{1AB67803-7BC1-4AC3-9949-E36060B166BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Core", "Domain.Core\Domain.Core.csproj", "{1AB67803-7BC1-4AC3-9949-E36060B166BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{4A4B2D0C-496D-4DF0-A285-8A38161FB96D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{4A4B2D0C-496D-4DF0-A285-8A38161FB96D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{F8283FA3-3052-4191-B368-7D7B2C292EC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{F8283FA3-3052-4191-B368-7D7B2C292EC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{F35DC54F-5435-4070-9FFD-47C59F5CBD81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Database.csproj", "{F35DC54F-5435-4070-9FFD-47C59F5CBD81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{AB06614B-8A04-421D-82F0-181F06ED6CBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{AB06614B-8A04-421D-82F0-181F06ED6CBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{39A8C011-CF9B-4548-971B-D59EDEB1CB06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.UnitTests", "Domain.UnitTests\Domain.UnitTests.csproj", "{53BD7C0E-AA08-4463-9630-92CDDC5C9D56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.UnitTests", "Service.UnitTests\Service.UnitTests.csproj", "{D8BFD9A3-8539-4A82-9567-9988F57BF6D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +51,21 @@ Global
 		{AB06614B-8A04-421D-82F0-181F06ED6CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB06614B-8A04-421D-82F0-181F06ED6CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB06614B-8A04-421D-82F0-181F06ED6CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53BD7C0E-AA08-4463-9630-92CDDC5C9D56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BD7C0E-AA08-4463-9630-92CDDC5C9D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BD7C0E-AA08-4463-9630-92CDDC5C9D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BD7C0E-AA08-4463-9630-92CDDC5C9D56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8BFD9A3-8539-4A82-9567-9988F57BF6D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8BFD9A3-8539-4A82-9567-9988F57BF6D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8BFD9A3-8539-4A82-9567-9988F57BF6D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8BFD9A3-8539-4A82-9567-9988F57BF6D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{53BD7C0E-AA08-4463-9630-92CDDC5C9D56} = {39A8C011-CF9B-4548-971B-D59EDEB1CB06}
+		{D8BFD9A3-8539-4A82-9567-9988F57BF6D5} = {39A8C011-CF9B-4548-971B-D59EDEB1CB06}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CB1A45A8-90EC-4741-B625-AA2965F9C8D0}

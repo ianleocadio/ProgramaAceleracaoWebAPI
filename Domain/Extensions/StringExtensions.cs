@@ -8,8 +8,13 @@ namespace Domain.Extensions
 {
     public static class StringExtensions
     {
-        public static bool IsValidEmail(this string email)
+        public static bool IsValidEmail(this string? email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);

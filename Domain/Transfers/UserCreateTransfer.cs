@@ -10,6 +10,6 @@ namespace Domain.Transfers
         public string? Name { get; set; }
         public string? Lastname { get; set; }
         public string? Email { get; set; }
-        public IEnumerable<PermissionEnum>? Permissions { get; set; }
+        public IEnumerable<PermissionEnum> Permissions { get; set; } = null!;
     }
 }

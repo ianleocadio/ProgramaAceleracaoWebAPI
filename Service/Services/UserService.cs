@@ -31,7 +31,7 @@ namespace Service.Services
 
         public async Task<User> CreateAsync(UserCreateTransfer newUser, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(newUser.Email) && !newUser.Email.IsValidEmail())
+            if (!string.IsNullOrEmpty(newUser.Email) && !newUser.Email.IsValidEmail())
             {
                 throw new ActionRejectedException("E-mail inválido.");
             }
@@ -62,7 +62,7 @@ namespace Service.Services
 
         public async Task<User> UpdateAsync(UserUpdateTransfer updateUser, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(updateUser.Email) && !updateUser.Email.IsValidEmail())
+            if (!string.IsNullOrEmpty(updateUser.Email) && !updateUser.Email.IsValidEmail())
             {
                 throw new ActionRejectedException("E-mail inválido.");
             }
@@ -99,11 +99,18 @@ namespace Service.Services
 
         #region Auxiliary Methods
 
-        public User TransferToEntity(UserCreateTransfer transfer, User entity)
+        private (string hash, string encryptedPassword) EncryptPassword(string password)
         {
             var hash = this._authService.CreateHash();
 
-            var encryptedPassword = this._authService.EncryptPassword(transfer.Password, hash);
+            var encryptedPassword = this._authService.EncryptPassword(password, hash);
+
+            return (hash, encryptedPassword);
+        }
+
+        public User TransferToEntity(UserCreateTransfer transfer, User entity)
+        {
+            var (hash, encryptedPassword) = this.EncryptPassword(transfer.Password);
 
             return new User()
             {
@@ -113,7 +120,7 @@ namespace Service.Services
                 Name = transfer.Name,
                 Lastname = transfer.Lastname,
                 Email = transfer.Email,
-                Permissions = transfer.Permissions?.Select(permission => new UserPermission
+                Permissions = transfer.Permissions.Select(permission => new UserPermission
                 {
                     Permission = permission
                 }).ToList()
